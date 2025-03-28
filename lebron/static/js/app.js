@@ -5,6 +5,23 @@ function profileLink(profile) {
     return a;
 }
 
+function likeButton(lElm) {
+    
+    lElm.addEventListener('click', (evt) => {
+        evt.preventDefault();
+        
+        fetch(`/api/like/${post.id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => reloadPosts())
+        .catch(error => showError(error));
+    })
+}
+
 function reloadPosts() {
     fetch('/api/post', {
         method: 'GET',
@@ -21,8 +38,18 @@ function reloadPosts() {
             let pElm = document.createElement('p');
             pElm.textContent = post.content + " by ";
             pElm.append(profileLink(post.profile));
+
+            let lElm = document.createElement('a');
+            lElm.textContent = " Like/Unlike";
+
+            let brElm = document.createElement('br');
+            let bElm = document.createElement('b');
+            bElm.textContent = post.likes.length + " Likes";
+            pElm.append(lElm);
+            pElm.append(brElm);
+            pElm.append(bElm);
             postsElm.append(pElm);
-        } );
+        });
     })
     .catch(error => showError(error));
 }

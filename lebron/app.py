@@ -147,7 +147,7 @@ def create_post():
 @app.route('/api/like/<post_id>/', methods=['POST'])
 def like_post(post_id):
     l = Like(
-            profile_id = session['profile_id'],
+            profile_id = session[PROFILE_ID],
             post_id = post_id,
             profile = Profile.query.get(session[PROFILE_ID])
             )
