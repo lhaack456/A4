@@ -120,6 +120,16 @@ def get_posts():
 
     return jsonify(list(map(lambda p: p.serialize(), posts)))
 
+@app.route('/api/post/<post_id>', methods=['GET'])
+def find_post_id():
+    ''' for single post
+    ?profile_id=
+    ?profile_name=
+    '''
+    posts = Post.query.filter_by(post_id=request.args['post_id']).first()
+
+    return jsonify(list(map(lambda p: p.serialize(), posts)))
+
 @app.route('/api/post/', methods=['POST'])
 def create_post():
     data = request.get_json()
@@ -143,6 +153,8 @@ def like_post(post_id):
             )
     db.session.add(l)
     db.session.commit()
+
+
 
 @app.route('/api/unlike/<post_id>/', methods=['POST'])
 def unlike_post(post_id):
