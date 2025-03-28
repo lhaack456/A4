@@ -19,7 +19,30 @@ function likeButton(lElm) {
         .then(response => response.json())
         .then(data => reloadPosts())
         .catch(error => showError(error));
-    })
+    });
+
+	lElm.addEventListener('click', () => {
+		fetch(`/api/like/${post.id}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+		})
+		.then(response => response.json())
+		.then(data => showLikes(data))
+		.catch(error => showError(error));
+});
+
+function showLikes(users) {
+	const m = document.createElement('div');
+	m.className = 'm';
+	m.innerHTML = `
+		<h3>Liked by:</h3>
+		<ul>
+			${users.map(user => `<li>${user.name}</li>`).join('')}
+		</ul>
+		`;
+		document.body.appendChild(m);
 }
 
 function reloadPosts() {
