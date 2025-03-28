@@ -135,10 +135,17 @@ def create_post():
     return jsonify(new_post.serialize())
 
 @app.route('/api/like/<post_id>/', methods=['POST'])
-def like_post():
-    return jsonify({ 'error': 'not supported yet' }), HTTPStatus.NOT_IMPLEMENTED
+def like_post(post_id):
+    l = Like(
+            profile_id = session['profile_id'],
+            post_id = post_id,
+            profile = Profile.query.get(session[PROFILE_ID])
+            )
+    db.session.add(l)
+    db.session.commit()
 
 @app.route('/api/unlike/<post_id>/', methods=['POST'])
-def unlike_post():
-    return jsonify({ 'error': 'not supported yet' }), HTTPStatus.NOT_IMPLEMENTED
-
+def unlike_post(post_id):
+    post = Like.query.filter_by(and_(profile_id=request.args['profile_id'], post_id=request.args['post_id'])).first()
+    db.sesson.remove(post)
+    db.session.commit()
