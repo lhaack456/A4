@@ -92,6 +92,7 @@ function reloadPosts() {
             let brElm = document.createElement('br');
             let bElm = document.createElement('b');
             bElm.textContent = post.likes.length + " Likes ";
+            // TODO Modify the event listener to affect modal
             bElm.addEventListener('click', () => {
                 fetch(`/api/post?post_id=${post.id}`, {
                         method: 'GET',
