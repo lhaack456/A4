@@ -60,18 +60,6 @@ function likeButton(lElm, post) {
 
 };
 
-function showLikes(users) {
-	const m = document.createElement('div');
-	m.className = 'm';
-	m.innerHTML = `
-		<h3>Liked by:</h3>
-		<ul>
-			${users.map(user => `<li>${user.name}</li>`).join('')}
-		</ul>
-		`;
-		document.body.appendChild(m);
-}
-
 function reloadPosts() {
     fetch('/api/post', {
         method: 'GET',
@@ -89,38 +77,26 @@ function reloadPosts() {
             pElm.textContent = post.content + " by ";
             pElm.append(profileLink(post.profile));
 
-            let brElm = document.createElement('br');
             let bElm = document.createElement('b');
             bElm.textContent = post.likes.length + " Likes ";
-            // TODO Modify the event listener to affect modal
-			})
-
+		
             bElm.addEventListener('click', () => {
-                fetch(`/api/post?post_id=${post.id}`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                })
-                .then(response => response.json())
-                .then(data => {
-						const myModal = document.getElementById('myModal');
-						const myInput = document.getElementById('myInput');
+                let content = document.getElementById('modal-body');
+                content.replaceChildren();
+                post.likes.forEach( (user) => {
+                    let uElm = document.createElement('p').textContent = user.profile.username;
+                    content.append(uElm);
+                    content.append(document.createElement('br'));
+                });
 
-						const bootstrapModal = new bootstrap.Modal(myModal);
-
-						myModal.addEventListener('shown.bs.modal', () => {
-							myInput.focus();
-						});
-						bootstrapModal.show();
-                })
-                .catch(error => showError(error));
+                const myModal = new bootstrap.Modal(document.getElementById('myModal'));
+                myModal.show();
             });
 
             let lElm = document.createElement('button');
             likeButton(lElm, post);
 
-            pElm.append(brElm);
+            pElm.append(document.createElement('br'));
             pElm.append(bElm);
             pElm.append(lElm);
             postsElm.append(pElm);
