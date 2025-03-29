@@ -5,33 +5,60 @@ function profileLink(profile) {
     return a;
 }
 
-function likeButton(lElm) {
+function likeButton(lElm, post) {
     
-    lElm.addEventListener('click', (evt) => {
-        evt.preventDefault();
-        
-        fetch(`/api/like/${post.id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => reloadPosts())
-        .catch(error => showError(error));
+    let isLiked = false;
+    // get all likes for current post
+    let allLikes = post.likes;
+    let userid = document.getElementById('sessionUser').value;
+    
+    allLikes.forEach( (profile) => {
+        if (profile.profile.id == userid) {
+            isLiked = true;
+            return;
+        }
     });
 
-	lElm.addEventListener('click', () => {
-		fetch(`/api/like/${post.id}`, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-		})
-		.then(response => response.json())
-		.then(data => showLikes(data))
-		.catch(error => showError(error));
-});
+    if (!isLiked) {
+        // Add Like Button
+        lElm.textContent = "Like";
+        
+        lElm.addEventListener('click', (evt) => {
+            evt.preventDefault();
+            
+            fetch(`/api/like/${post.id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => reloadPosts())
+            .catch(error => showError(error));
+        });
+    }
+
+    else {
+        // Add Unlike Button
+        lElm.textContent = "Unlike";
+        
+        lElm.addEventListener('click', (evt) => {
+            evt.preventDefault();
+            
+            fetch(`/api/unlike/${post.id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => reloadPosts())
+            .catch(error => showError(error));
+        });
+    }
+
+
+};
 
 function showLikes(users) {
 	const m = document.createElement('div');
@@ -62,15 +89,27 @@ function reloadPosts() {
             pElm.textContent = post.content + " by ";
             pElm.append(profileLink(post.profile));
 
-            let lElm = document.createElement('a');
-            lElm.textContent = " Like/Unlike";
-
             let brElm = document.createElement('br');
             let bElm = document.createElement('b');
             bElm.textContent = post.likes.length + " Likes";
-            pElm.append(lElm);
+            bElm.addEventListener('click', () => {
+                fetch(`/api/post?post_id=${post.id}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                })
+                .then(response => response.json())
+                .then(data => showLikes(data))
+                .catch(error => showError(error));
+            });
+
+            let lElm = document.createElement('button');
+            likeButton(lElm, post);
+
             pElm.append(brElm);
             pElm.append(bElm);
+            pElm.append(lElm);
             postsElm.append(pElm);
         });
     })

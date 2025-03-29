@@ -111,22 +111,15 @@ def get_posts():
     ''' for single post
     ?profile_id=
     ?profile_name=
+    ?post_id=
     '''
 
     if 'profile_id' in request.args:
         posts = Post.query.filter_by(profile_id=request.args['profile_id']).all()
+    elif 'post_id' in request.args:
+        posts = Post.query.filter_by(id=request.args['post_id']).all()
     else:
         posts = Post.query.all()
-
-    return jsonify(list(map(lambda p: p.serialize(), posts)))
-
-@app.route('/api/post/<post_id>', methods=['GET'])
-def find_post_id():
-    ''' for single post
-    ?profile_id=
-    ?profile_name=
-    '''
-    posts = Post.query.filter_by(post_id=request.args['post_id']).first()
 
     return jsonify(list(map(lambda p: p.serialize(), posts)))
 
@@ -153,11 +146,10 @@ def like_post(post_id):
             )
     db.session.add(l)
     db.session.commit()
-
-
+    return jsonify(l.serialize())
 
 @app.route('/api/unlike/<post_id>/', methods=['POST'])
 def unlike_post(post_id):
-    post = Like.query.filter_by(and_(profile_id=request.args['profile_id'], post_id=request.args['post_id'])).first()
-    db.sesson.remove(post)
+    Like.query.filter_by(profile_id=session[PROFILE_ID], post_id=post_id).delete()
     db.session.commit()
+    return jsonify({ 'status': 'removed' })
