@@ -79,31 +79,6 @@ function reloadPosts() {
 
             let bElm = document.createElement('b');
             bElm.textContent = post.likes.length + " Likes ";
-<<<<<<< Updated upstream
-            // TODO Modify the event listener to affect modal
-			})
-
-            bElm.addEventListener('click', () => {
-                fetch(`/api/post?post_id=${post.id}`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                })
-                .then(response => response.json())
-                .then(data => {
-						const myModal = document.getElementById('myModal');
-						const myInput = document.getElementById('myInput');
-
-						const bootstrapModal = new bootstrap.Modal(myModal);
-
-						myModal.addEventListener('shown.bs.modal', () => {
-							myInput.focus();
-						});
-						bootstrapModal.show();
-                })
-                .catch(error => showError(error));
-=======
 		
             bElm.addEventListener('click', () => {
                 let content = document.getElementById('modal-body');
@@ -116,7 +91,6 @@ function reloadPosts() {
 
                 const myModal = new bootstrap.Modal(document.getElementById('myModal'));
                 myModal.show();
->>>>>>> Stashed changes
             });
 
             let lElm = document.createElement('button');
