@@ -93,6 +93,13 @@ function reloadPosts() {
             let bElm = document.createElement('b');
             bElm.textContent = post.likes.length + " Likes ";
             // TODO Modify the event listener to affect modal
+			const myModal = document.getElementById('myModal')
+			const myInput = document.getElementById('myInput')
+
+			myModal.addEventListener('shown.bs.modal', () => {
+  			myInput.focus()
+})
+			const myModal new bootstrap.Modal(document.getElementById('myModal'), options)
             bElm.addEventListener('click', () => {
                 fetch(`/api/post?post_id=${post.id}`, {
                         method: 'GET',
