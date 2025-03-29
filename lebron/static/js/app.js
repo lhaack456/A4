@@ -60,18 +60,6 @@ function likeButton(lElm, post) {
 
 };
 
-function showLikes(users) {
-	const m = document.createElement('div');
-	m.className = 'm';
-	m.innerHTML = `
-		<h3>Liked by:</h3>
-		<ul>
-			${users.map(user => `<li>${user.name}</li>`).join('')}
-		</ul>
-		`;
-		document.body.appendChild(m);
-}
-
 function reloadPosts() {
     fetch('/api/post', {
         method: 'GET',
@@ -89,9 +77,9 @@ function reloadPosts() {
             pElm.textContent = post.content + " by ";
             pElm.append(profileLink(post.profile));
 
-            let brElm = document.createElement('br');
             let bElm = document.createElement('b');
             bElm.textContent = post.likes.length + " Likes ";
+<<<<<<< Updated upstream
             // TODO Modify the event listener to affect modal
 			})
 
@@ -115,12 +103,26 @@ function reloadPosts() {
 						bootstrapModal.show();
                 })
                 .catch(error => showError(error));
+=======
+		
+            bElm.addEventListener('click', () => {
+                let content = document.getElementById('modal-body');
+                content.replaceChildren();
+                post.likes.forEach( (user) => {
+                    let uElm = document.createElement('p').textContent = user.profile.username;
+                    content.append(uElm);
+                    content.append(document.createElement('br'));
+                });
+
+                const myModal = new bootstrap.Modal(document.getElementById('myModal'));
+                myModal.show();
+>>>>>>> Stashed changes
             });
 
             let lElm = document.createElement('button');
             likeButton(lElm, post);
 
-            pElm.append(brElm);
+            pElm.append(document.createElement('br'));
             pElm.append(bElm);
             pElm.append(lElm);
             postsElm.append(pElm);

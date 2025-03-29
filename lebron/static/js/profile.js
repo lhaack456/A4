@@ -13,6 +13,25 @@ function reloadPosts(profile) {
         posts.forEach( (post) => {
             let pElm = document.createElement('p');
             pElm.textContent = post.content;
+
+            let bElm = document.createElement('b');
+            bElm.textContent = post.likes.length + " Likes ";
+		
+            bElm.addEventListener('click', () => {
+                let content = document.getElementById('modal-body');
+                content.replaceChildren();
+                post.likes.forEach( (user) => {
+                    let uElm = document.createElement('p').textContent = user.profile.username;
+                    content.append(uElm);
+                    content.append(document.createElement('br'));
+                });
+
+                const myModal = new bootstrap.Modal(document.getElementById('myModal'));
+                myModal.show();
+            });
+
+            pElm.append(document.createElement('br'));
+            pElm.append(bElm);
             postsElm.append(pElm);
         } );
     })
